@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dowry Price Calculator</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(45deg, #ff6a00, #d16ba5);
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      flex-direction: column;
+      text-align: center;
+      padding: 20px;
+    }
+
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 30px;
+      animation: fadeIn 2s ease;
+    }
+
+    form {
+      background: rgba(0, 0, 0, 0.7);
+      border-radius: 15px;
+      padding: 30px;
+      width: 100%;
+      max-width: 600px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+      animation: scaleUp 1s ease-out;
+    }
+
+    label {
+      font-size: 1.1rem;
+      margin-bottom: 15px;
+      display: block;
+      text-align: left;
+      color: #fff;
+    }
+
+    select, input[type="checkbox"], input[type="radio"] {
+      margin-top: 5px;
+      padding: 10px;
+      width: 100%;
+      border-radius: 8px;
+      background: #444;
+      color: white;
+      font-size: 1rem;
+      border: none;
+      outline: none;
+    }
+
+    button {
+      margin-top: 20px;
+      background: #ff6a00;
+      padding: 15px 30px;
+      border: none;
+      border-radius: 10px;
+      font-size: 1.2rem;
+      color: white;
+      cursor: pointer;
+      width: 100%;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background: #d16ba5;
+    }
+
+    #result {
+      margin-top: 30px;
+      font-size: 1.6rem;
+      font-weight: bold;
+      color: #d4edda;
+      animation: bounceIn 2s ease;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes scaleUp {
+      from {
+        transform: scale(0.5);
+      }
+      to {
+        transform: scale(1);
+      }
+    }
+
+    @keyframes bounceIn {
+      0% {
+        transform: translateY(-2000px);
+      }
+      60% {
+        transform: translateY(30px);
+      }
+      80% {
+        transform: translateY(-10px);
+      }
+      100% {
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>👰🤵 Dowry Price Calculator</h1>
+
+  <form id="dowryForm">
+    <label for="education">🎓 Education Level</label>
+    <select id="education">
+      <option value="1.5">Undergraduate</option>
+      <option value="1.2">College</option>
+      <option value="1.05">High School</option>
+      <option value="0.9">Middle School</option>
+    </select>
+
+    <label for="networth">💰 Family Net Worth</label>
+    <select id="networth">
+      <option value="2">More than $10,000</option>
+      <option value="1.5">$5,000 - $10,000</option>
+      <option value="1.2">Less than $5,000</option>
+    </select>
+
+    <label for="caste">🧬 Caste</label>
+    <select id="caste">
+      <option value="100">Brahmin</option>
+      <option value="50">Kshatriya</option>
+      <option value="20">Vaishya</option>
+      <option value="10">Shudra</option>
+      <option value="-50">Untouchable</option>
+    </select>
+
+    <label for="skills">🛠️ Skills</label>
+    <input type="checkbox" class="skill" value="10"> Musical Instrument<br>
+    <input type="checkbox" class="skill" value="20"> Good Cook<br>
+    <input type="checkbox" class="skill" value="15"> Easygoing<br>
+    <input type="checkbox" class="skill" value="10"> Sings Well<br>
+
+    <label>🎂 Age</label>
+    <input type="radio" name="age" value="1.5" checked> 18-23<br>
+    <input type="radio" name="age" value="1.2"> 24-27<br>
+    <input type="radio" name="age" value="0.95"> 28+<br>
+
+    <label>👀 Reputation</label>
+    <input type="checkbox" class="reputation" value="0.85"> Gossips about parents<br>
+    <input type="checkbox" class="reputation" value="0.9"> Gossips about character<br>
+    <input type="checkbox" class="reputationFlat" value="-20"> General gossips<br>
+
+    <button type="button" onclick="calculatePrice()">Calculate 💰</button>
+  </form>
+
+  <div id="result"></div>
+
+  <script>
+    function calculatePrice() {
+      let price = 100;
+      const edu = parseFloat(document.getElementById('education').value);
+      const net = parseFloat(document.getElementById('networth').value);
+      const caste = parseFloat(document.getElementById('caste').value);
+      const age = parseFloat(document.querySelector('input[name="age"]:checked').value);
+
+      // Skills
+      let skillTotal = 0;
+      document.querySelectorAll('.skill:checked').forEach(skill => {
+        skillTotal += parseFloat(skill.value);
+      });
+
+      // Reputation Coefficients
+      let repCoef = 1;
+      document.querySelectorAll('.reputation:checked').forEach(rep => {
+        repCoef *= parseFloat(rep.value);
+      });
+
+      // Flat deduction
+      let repFlat = 0;
+      document.querySelectorAll('.reputationFlat:checked').forEach(rep => {
+        repFlat += parseFloat(rep.value);
+      });
+
+      // Final price calculation
+      let final = ((price * edu * net * age) + caste + skillTotal + repFlat) * repCoef;
+
+      // DOM Manipulation
+      const resultDiv = document.getElementById('result');
+      resultDiv.textContent = `💰 Final Dowry Price: $${final.toFixed(2)}`;
+
+      // Update style dynamically
+      resultDiv.style.color = final > 200 ? "green" : "red";
+      document.body.style.background = final > 200 ? "#e8f5e9" : "#ffebee";
+    }
+  </script>
+</body>
+</html>
+
